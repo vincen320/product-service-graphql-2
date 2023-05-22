@@ -1,45 +1,39 @@
 package app
 
 import (
-	"github.com/graphql-go/graphql"
+	"os"
+
+	"github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/labstack/echo/v4"
-	"github.com/vincen320/product-service-graphql/handler"
-	"github.com/vincen320/product-service-graphql/repository"
-	"github.com/vincen320/product-service-graphql/usecase"
+
+	graphqlHandler "github.com/vincen320/product-service-graphql-2/modules/graphql/handler"
+	"github.com/vincen320/product-service-graphql-2/modules/graphql/resolver"
+	productRepository "github.com/vincen320/product-service-graphql-2/modules/product/repository"
+	productUseCase "github.com/vincen320/product-service-graphql-2/modules/product/usecase"
 )
 
 func Run() {
 	var (
 		db                = NewDB()
-		productRepository = repository.NewProductRepository(db)
-		productUseCase    = usecase.NewProductUseCase(productRepository)
-		productGQL        = handler.NewProductGQLHandler(productUseCase)
-
-		queryType = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Query",
-			Fields: graphql.Fields{
-				"product": productGQL.GetAllProducts(),
-			},
-		})
-
-		mutationType = graphql.NewObject(graphql.ObjectConfig{
-			Name:   "Mutation",
-			Fields: graphql.Fields{},
-		})
-
-		schema, _ = graphql.NewSchema(graphql.SchemaConfig{
-			Query:    queryType,
-			Mutation: mutationType,
-			// https://github.com/graphql-go/graphql/issues/486
-			// Types: []graphql.Type{
-			// 	model.ClothType, model.VehicleType,
-			// },
-		})
-
-		graphqlPresenter = handler.NewGraphqlHandler(schema)
+		productRepository = productRepository.NewProductRepository(db)
+		productUseCase    = productUseCase.NewProductUseCase(productRepository)
+	)
+	schemeFile, err := os.ReadFile("schema.graphql")
+	if err != nil {
+		panic(err)
+	}
+	schemeString := string(schemeFile)
+	schema := graphql.MustParseSchema(schemeString, &resolver.RootResolver{})
+	schemaHandler := &relay.Handler{
+		Schema: schema,
+	}
+	graphqlHandler := graphqlHandler.NewGraphqlHandler(
+		schemaHandler.Schema,
+		productUseCase,
 	)
 	e := echo.New()
 	v1 := e.Group("v1")
-	v1.POST("/graphql", graphqlPresenter.GraphQL)
+	v1.POST("/graphql", graphqlHandler.GraphQL)
 	e.Start(":4000")
 }

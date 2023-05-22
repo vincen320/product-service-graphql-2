@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/vincen320/product-service-graphql/app"
+	"github.com/vincen320/product-service-graphql-2/app"
 )
 
 var appCmd = &cobra.Command{

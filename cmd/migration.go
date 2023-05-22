@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/spf13/cobra"
-	"github.com/vincen320/product-service-graphql/app"
-	"github.com/vincen320/product-service-graphql/migration"
+	"github.com/vincen320/product-service-graphql-2/app"
+	"github.com/vincen320/product-service-graphql-2/migration"
 )
 
 func init() {

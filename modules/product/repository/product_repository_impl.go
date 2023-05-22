@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	cError "github.com/vincen320/product-service-graphql/helper/error"
-	"github.com/vincen320/product-service-graphql/model"
+	cError "github.com/vincen320/product-service-graphql-2/helper/error"
+	productModel "github.com/vincen320/product-service-graphql-2/modules/product/model"
 )
 
 type productRepository struct {
@@ -18,7 +18,7 @@ func NewProductRepository(db *sql.DB) ProductRepository {
 		db: db,
 	}
 }
-func (p *productRepository) FindAllProducts(ctx context.Context) (response []model.Product, err error) {
+func (p *productRepository) FindAllProducts(ctx context.Context) (response []productModel.Product, err error) {
 	rows, err := p.db.Query(
 		`SELECT
 			id
@@ -40,7 +40,7 @@ func (p *productRepository) FindAllProducts(ctx context.Context) (response []mod
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var product model.Product
+		var product productModel.Product
 		if err = rows.Scan(
 			&product.ID,
 			&product.Name,
