@@ -24,13 +24,13 @@ func Run() {
 		panic(err)
 	}
 	schemeString := string(schemeFile)
-	schema := graphql.MustParseSchema(schemeString, &resolver.RootResolver{})
+	rootResolver := resolver.NewRootResolver(productUseCase)
+	schema := graphql.MustParseSchema(schemeString, rootResolver)
 	schemaHandler := &relay.Handler{
 		Schema: schema,
 	}
 	graphqlHandler := graphqlHandler.NewGraphqlHandler(
 		schemaHandler.Schema,
-		productUseCase,
 	)
 	e := echo.New()
 	v1 := e.Group("v1")

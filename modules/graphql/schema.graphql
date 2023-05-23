@@ -1,0 +1,23 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+    product: [Product]!
+}
+
+type Mutation {
+}
+
+scalar Time
+
+interface Product{
+    ID: ID!
+    Name: String!
+    Description: String!
+    Price: Int!
+    CreatedBy: Int!
+    CreatedAt: Time!
+    Type: Int!
+}

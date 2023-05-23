@@ -2,7 +2,7 @@ package helper
 
 import "encoding/json"
 
-func DecodeRequest[T any](request any) (T, error) {
+func ConvertPayload[T any](request any) (T, error) {
 	var decodedRequest T
 	requestByte, err := json.Marshal(request)
 	if err != nil {

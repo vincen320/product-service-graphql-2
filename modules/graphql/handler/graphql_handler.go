@@ -7,22 +7,18 @@ import (
 	"github.com/graph-gophers/graphql-go"
 	"github.com/labstack/echo/v4"
 	cerror "github.com/vincen320/product-service-graphql-2/helper/error"
-	productUseCase "github.com/vincen320/product-service-graphql-2/modules/product/usecase"
 	"github.com/vincen320/product-service-graphql-2/state"
 )
 
 type graphQLHandler struct {
-	graphqlSchema  *graphql.Schema
-	productUseCase productUseCase.ProductUseCase
+	graphqlSchema *graphql.Schema
 }
 
 func NewGraphqlHandler(
 	graphqlSchema *graphql.Schema,
-	productUseCase productUseCase.ProductUseCase,
 ) *graphQLHandler {
 	return &graphQLHandler{
-		graphqlSchema:  graphqlSchema,
-		productUseCase: productUseCase,
+		graphqlSchema: graphqlSchema,
 	}
 }
 
