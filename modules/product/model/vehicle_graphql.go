@@ -8,6 +8,12 @@ type (
 	}
 )
 
+func (v *VehicleResolver) ID() graphql.ID {
+	var ID graphql.ID
+	ID.UnmarshalGraphQL(int32(v.attr.ID))
+	return ID
+}
+
 func (v *VehicleResolver) Name() string {
 	return v.attr.Name
 }
@@ -40,4 +46,9 @@ func (v *VehicleResolver) Engine() string {
 
 func (v *VehicleResolver) Wheel() int32 {
 	return int32(v.attr.Wheel)
+}
+
+// setter
+func (v *VehicleResolver) SetAttr(vehicle Vehicle) {
+	v.attr = vehicle
 }

@@ -22,7 +22,7 @@ interface Product{
     type: Int!
 }
 
-type Cloth{
+type Cloth implements Product{
     id: ID!
     name: String!
     description: String!
@@ -34,7 +34,7 @@ type Cloth{
     size: String!
 }
 
-type Vehicle{
+type Vehicle implements Product{
     id: ID!
     name: String!
     description: String!

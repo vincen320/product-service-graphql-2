@@ -49,3 +49,8 @@ func (c *ClothResolver) Material() string {
 func (c *ClothResolver) Size() string {
 	return c.attr.Size
 }
+
+// setter
+func (c *ClothResolver) SetAttr(cloth Cloth) {
+	c.attr = cloth
+}
