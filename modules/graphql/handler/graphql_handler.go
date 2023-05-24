@@ -38,7 +38,7 @@ func (g *graphQLHandler) GraphQL(c echo.Context) (err error) {
 	)
 
 	if len(response.Errors) > 0 {
-		if cerr, ok := cerror.ExtractCustomError(response.Errors[0].Err); ok {
+		if cerr, ok := cerror.ExtractCustomError(response.Errors[0].Unwrap()); ok {
 			log.Println(cerr.GetActualError())
 			return state.NewResponse(cerr.GetCode(), cerr.GetErrorMessage()).JSON(c.Response())
 		}

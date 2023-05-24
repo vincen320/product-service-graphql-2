@@ -1,6 +1,8 @@
 package model
 
-import "github.com/graph-gophers/graphql-go"
+import (
+	"github.com/graph-gophers/graphql-go"
+)
 
 type (
 	ProductResolver struct {
@@ -11,9 +13,9 @@ type (
 		ID() graphql.ID
 		Name() string
 		Description() string
-		Price() int64
-		CreatedBy() int64
+		Price() int32
+		CreatedBy() int32
 		CreatedAt() graphql.Time
-		Type() int
+		Type() int32
 	}
 )

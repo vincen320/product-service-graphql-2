@@ -13,11 +13,35 @@ type Mutation {
 scalar Time
 
 interface Product{
-    ID: ID!
-    Name: String!
-    Description: String!
-    Price: Int!
-    CreatedBy: Int!
-    CreatedAt: Time!
-    Type: Int!
+    id: ID!
+    name: String!
+    description: String!
+    price: Int!
+    createdBy: Int!
+    createdAt: Time!
+    type: Int!
+}
+
+type Cloth{
+    id: ID!
+    name: String!
+    description: String!
+    price: Int!
+    createdBy: Int!
+    createdAt: Time!
+    type: Int!
+    material: String!
+    size: String!
+}
+
+type Vehicle{
+    id: ID!
+    name: String!
+    description: String!
+    price: Int!
+    createdBy: Int!
+    createdAt: Time!
+    type: Int!
+    engine: String!
+    wheel: Int!
 }

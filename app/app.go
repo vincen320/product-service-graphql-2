@@ -19,7 +19,7 @@ func Run() {
 		productRepository = productRepository.NewProductRepository(db)
 		productUseCase    = productUseCase.NewProductUseCase(productRepository)
 	)
-	schemeFile, err := os.ReadFile("schema.graphql")
+	schemeFile, err := os.ReadFile("./modules/graphql/schema.graphql")
 	if err != nil {
 		panic(err)
 	}

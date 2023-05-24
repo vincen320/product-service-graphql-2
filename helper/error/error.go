@@ -24,6 +24,9 @@ func (c customError) Error() string {
 }
 
 func ExtractCustomError(err error) (response customError, ok bool) {
+	if err == nil {
+		return
+	}
 	splitError := strings.Split(err.Error(), "|")
 	if ok = len(splitError) == 3; ok {
 		response.code, _ = strconv.Atoi(splitError[0])
