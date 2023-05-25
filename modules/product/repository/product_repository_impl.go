@@ -21,15 +21,18 @@ func NewProductRepository(db *sql.DB) ProductRepository {
 func (p *productRepository) FindAllProducts(ctx context.Context) (response []productModel.Product, err error) {
 	rows, err := p.db.Query(
 		`SELECT
-			id
-			, name
-			, description
-			, price
-			, created_by
-			, created_at
-			, "type"
+			p.id
+			, p.name
+			, p.description
+			, p.price
+			, p.created_by
+			, p.created_at
+			, p."type"
+			, pa.attribute
+			, pa.value
 		FROM products p
-		ORDER BY id `,
+		JOIN product_attributes pa ON pa.product_id = p.id
+		ORDER BY id`,
 	)
 	if err == sql.ErrNoRows {
 		err = nil
@@ -39,8 +42,12 @@ func (p *productRepository) FindAllProducts(ctx context.Context) (response []pro
 		return
 	}
 	defer rows.Close()
+	mapProduct := map[int64]productModel.Product{}
 	for rows.Next() {
-		var product productModel.Product
+		product := productModel.Product{
+			AdditionalAttr: map[string]interface{}{},
+		}
+		var attribute, value string
 		if err = rows.Scan(
 			&product.ID,
 			&product.Name,
@@ -49,11 +56,22 @@ func (p *productRepository) FindAllProducts(ctx context.Context) (response []pro
 			&product.CreatedBy,
 			&product.CreatedAt,
 			&product.Type,
+			&attribute,
+			&value,
 		); err != nil {
 			err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
 			return
 		}
-		response = append(response, product)
+		if existingProduct, ok := mapProduct[product.ID]; !ok {
+			product.AdditionalAttr[attribute] = value
+			response = append(response, product)
+			mapProduct[product.ID] = product
+		} else {
+			existingProduct.AdditionalAttr[attribute] = value
+			lastIndex := len(response) - 1
+			response[lastIndex] = existingProduct
+			mapProduct[product.ID] = existingProduct
+		}
 	}
 	return
 }

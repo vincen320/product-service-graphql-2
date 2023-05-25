@@ -2,9 +2,9 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
-	"github.com/vincen320/product-service-graphql-2/helper"
 	cErr "github.com/vincen320/product-service-graphql-2/helper/error"
 	productModel "github.com/vincen320/product-service-graphql-2/modules/product/model"
 )
@@ -12,10 +12,11 @@ import (
 func (q *queryResolver) Product(ctx context.Context) (response []*productModel.ProductResolver, err error) {
 	products, err := q.productUseCase.FindAllProducts(ctx)
 	response = []*productModel.ProductResolver{}
+	fmt.Println(products)
 	for _, product := range products {
 		switch product.Type {
 		case productModel.ProductTypeCloth:
-			cloth, err := helper.ConvertPayload[productModel.Cloth](product)
+			cloth := product.ToCloth()
 			var clothResolver productModel.ClothResolver
 			clothResolver.SetAttr(cloth)
 			if err != nil {
@@ -26,7 +27,7 @@ func (q *queryResolver) Product(ctx context.Context) (response []*productModel.P
 				ProductInterface: &clothResolver,
 			})
 		case productModel.ProdcutTypeVehicle:
-			vehicle, err := helper.ConvertPayload[productModel.Vehicle](product)
+			vehicle := product.ToVehicle()
 			var vehicleResolver productModel.VehicleResolver
 			vehicleResolver.SetAttr(vehicle)
 			if err != nil {
