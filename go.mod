@@ -20,6 +20,7 @@ require (
 )
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/graph-gophers/graphql-go v1.5.1-0.20230420075959-f0f4e10d6a70
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/labstack/echo/v4 v4.10.2
