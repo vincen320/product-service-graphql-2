@@ -45,3 +45,17 @@ type Vehicle implements Product{
     engine: String!
     wheel: Int!
 }
+
+input ProductInput{
+    id: ID!
+    name: String!
+    description: String!
+    price: Int!
+    createdBy: Int!
+    createdAt: Time!
+    type: Int!
+    material: String
+    size: String
+    engine: String
+    wheel: Int
+}
