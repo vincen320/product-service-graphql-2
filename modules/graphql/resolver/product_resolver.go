@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	cErr "github.com/vincen320/product-service-graphql-2/helper/error"
@@ -12,7 +11,6 @@ import (
 func (q *queryResolver) Product(ctx context.Context) (response []*productModel.ProductResolver, err error) {
 	products, err := q.productUseCase.FindAllProducts(ctx)
 	response = []*productModel.ProductResolver{}
-	fmt.Println(products)
 	for _, product := range products {
 		switch product.Type {
 		case productModel.ProductTypeCloth:
