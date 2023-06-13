@@ -3,7 +3,10 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
+	"strings"
+	"time"
 
 	cError "github.com/vincen320/product-service-graphql-2/helper/error"
 	productModel "github.com/vincen320/product-service-graphql-2/modules/product/model"
@@ -74,4 +77,49 @@ func (p *productRepository) FindAllProducts(ctx context.Context) (response []pro
 		}
 	}
 	return
+}
+
+func (p *productRepository) CreateProduct(ctx context.Context, request productModel.Product) (response productModel.Product, err error) {
+	request.CreatedAt = time.Now().UTC()
+	err = p.db.QueryRow(
+		`INSERT INTO products(
+			 name
+			, description
+			, price
+			, created_by
+			, created_at
+			, "type"
+		) VALUES($1, $2, $3, $4, $5, $6) RETURNING id`,
+		request.Name,
+		request.Description,
+		request.Price,
+		request.CreatedBy,
+		request.CreatedAt,
+		request.Type,
+	).Scan(&request.ID)
+	if err != nil {
+		err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
+		return
+	}
+	var placeholders []string
+	var params []interface{}
+	for k, v := range request.AdditionalAttr {
+		params = append(params, k, v)
+		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d)", len(params)-1, len(params)))
+	}
+	if len(placeholders) > 0 {
+		if _, err = p.db.Exec(fmt.Sprintf(
+			`INSERT INTO product_attributes(
+				attribute
+				, value
+			) VALUES (%s)`,
+			strings.Join(placeholders, ","),
+		),
+			params...,
+		); err != nil {
+			err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
+			return
+		}
+	}
+	return request, err
 }

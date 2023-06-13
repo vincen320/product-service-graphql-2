@@ -9,5 +9,6 @@ import (
 type (
 	ProductRepository interface {
 		FindAllProducts(ctx context.Context) (response []productModel.Product, err error)
+		CreateProduct(ctx context.Context, request productModel.Product) (response productModel.Product, err error)
 	}
 )

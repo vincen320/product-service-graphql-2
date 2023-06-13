@@ -40,3 +40,17 @@ func (p Product) ToVehicle() Vehicle {
 		Wheel:   wheel,
 	}
 }
+
+func (p *Product) InitType() {
+	_, wheelOk := p.AdditionalAttr["wheel"]
+	_, engineOk := p.AdditionalAttr["engine"]
+	_, materialOk := p.AdditionalAttr["material"]
+	_, sizeOk := p.AdditionalAttr["size"]
+
+	if wheelOk || engineOk {
+		p.Type = ProdcutTypeVehicle
+	}
+	if materialOk || sizeOk {
+		p.Type = ProductTypeCloth
+	}
+}

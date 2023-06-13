@@ -20,3 +20,9 @@ func NewProductUseCase(productRepository prductRepository.ProductRepository) Pro
 func (p *productUseCase) FindAllProducts(ctx context.Context) (response []productModel.Product, err error) {
 	return p.productRepository.FindAllProducts(ctx)
 }
+
+func (p *productUseCase) CreateProduct(ctx context.Context, request productModel.Product) (response productModel.Product, err error) {
+	// Add Validator
+	request.InitType()
+	return p.productRepository.CreateProduct(ctx, request)
+}
