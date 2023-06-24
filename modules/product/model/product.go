@@ -24,13 +24,13 @@ type (
 		AdditionalAttr map[string]interface{} `json:"-"`
 	}
 	ProductInput struct {
-		Name        string  `json:"name"`
-		Description string  `json:"description"`
-		Price       float64 `json:"price"`
-		Material    *string `json:"material"`
-		Size        *string `json:"size"`
-		Engine      *string `json:"engine"`
-		Wheel       *int    `json:"wheel"`
+		Name        string   `json:"name"`
+		Description string   `json:"description"`
+		Price       float64  `json:"price"`
+		Material    *string  `json:"material"`
+		Size        *string  `json:"size"`
+		Engine      *string  `json:"engine"`
+		Wheel       *float64 `json:"wheel"`
 	}
 )
 
