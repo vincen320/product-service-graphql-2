@@ -7,6 +7,7 @@ import (
 	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/labstack/echo/v4"
 
+	"github.com/vincen320/product-service-graphql-2/middleware"
 	graphqlHandler "github.com/vincen320/product-service-graphql-2/modules/graphql/handler"
 	"github.com/vincen320/product-service-graphql-2/modules/graphql/resolver"
 	productRepository "github.com/vincen320/product-service-graphql-2/modules/product/repository"
@@ -34,6 +35,6 @@ func Run() {
 	)
 	e := echo.New()
 	v1 := e.Group("v1")
-	v1.POST("/graphql", graphqlHandler.GraphQL)
+	v1.POST("/graphql", graphqlHandler.GraphQL, middleware.JWTAuthentication())
 	e.Start(":4000")
 }

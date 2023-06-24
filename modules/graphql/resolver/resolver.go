@@ -9,7 +9,9 @@ type (
 	queryResolver struct {
 		productUseCase productUseCase.ProductUseCase
 	}
-	mutationResolver struct{}
+	mutationResolver struct {
+		productUseCase productUseCase.ProductUseCase
+	}
 )
 
 func NewRootResolver(productUseCase productUseCase.ProductUseCase) *rootResolver {
@@ -24,5 +26,6 @@ func (r *rootResolver) Query() *queryResolver {
 }
 
 func (r *rootResolver) Mutation() *mutationResolver {
-	return &mutationResolver{}
+	return &mutationResolver{
+		productUseCase: r.productUseCase}
 }

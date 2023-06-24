@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 
@@ -81,7 +82,12 @@ func (p *productRepository) FindAllProducts(ctx context.Context) (response []pro
 
 func (p *productRepository) CreateProduct(ctx context.Context, request productModel.Product) (response productModel.Product, err error) {
 	request.CreatedAt = time.Now().UTC()
-	err = p.db.QueryRow(
+	tx, err := p.db.Begin()
+	if err != nil {
+		err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
+		return
+	}
+	err = tx.QueryRow(
 		`INSERT INTO products(
 			 name
 			, description
@@ -98,28 +104,37 @@ func (p *productRepository) CreateProduct(ctx context.Context, request productMo
 		request.Type,
 	).Scan(&request.ID)
 	if err != nil {
+		tx.Rollback()
 		err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
 		return
 	}
 	var placeholders []string
-	var params []interface{}
+	params := []interface{}{request.ID}
 	for k, v := range request.AdditionalAttr {
+		if reflect.ValueOf(v).Kind() == reflect.Ptr {
+			v = reflect.Indirect(reflect.ValueOf(v)).Interface()
+			request.AdditionalAttr[k] = v
+		}
 		params = append(params, k, v)
-		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d)", len(params)-1, len(params)))
+		placeholders = append(placeholders, fmt.Sprintf("($1, $%d, $%d)", len(params)-1, len(params)))
 	}
 	if len(placeholders) > 0 {
-		if _, err = p.db.Exec(fmt.Sprintf(
-			`INSERT INTO product_attributes(
-				attribute
+		if _, err = tx.Exec(
+			fmt.Sprintf(
+				`INSERT INTO product_attributes(
+				product_id
+				, attribute
 				, value
-			) VALUES (%s)`,
-			strings.Join(placeholders, ","),
-		),
+			) VALUES %s`,
+				strings.Join(placeholders, ","),
+			),
 			params...,
 		); err != nil {
+			tx.Rollback()
 			err = cError.New(http.StatusInternalServerError, "internal server error", err.Error())
 			return
 		}
 	}
+	tx.Commit()
 	return request, err
 }

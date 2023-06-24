@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/graph-gophers/graphql-go"
 	"github.com/labstack/echo/v4"
@@ -29,9 +31,11 @@ func (g *graphQLHandler) GraphQL(c echo.Context) (err error) {
 		log.Println(err)
 		return state.NewResponse(http.StatusBadRequest, "invalid payload").JSON(c.Response())
 	}
-
+	userID := c.Get("user-id").(string)
+	userIDInt, _ := strconv.ParseInt(userID, 10, 64)
+	ctx := context.WithValue(c.Request().Context(), state.UserID{}, userIDInt)
 	response := g.graphqlSchema.Exec(
-		c.Request().Context(),
+		ctx,
 		request.Query,
 		request.OperationName,
 		request.Variables,

@@ -8,6 +8,7 @@ type Query {
 }
 
 type Mutation {
+    createProduct(product: ProductInput!): Product!
 }
 
 scalar Time
@@ -47,13 +48,9 @@ type Vehicle implements Product{
 }
 
 input ProductInput{
-    id: ID!
     name: String!
     description: String!
-    price: Int!
-    createdBy: Int!
-    createdAt: Time!
-    type: Int!
+    price: Float!
     material: String
     size: String
     engine: String

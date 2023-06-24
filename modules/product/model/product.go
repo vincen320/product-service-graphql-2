@@ -3,6 +3,8 @@ package model
 import (
 	"strconv"
 	"time"
+
+	"github.com/vincen320/product-service-graphql-2/helper"
 )
 
 const (
@@ -20,6 +22,15 @@ type (
 		CreatedAt      time.Time              `json:"created_at"`
 		Type           int                    `json:"type"`
 		AdditionalAttr map[string]interface{} `json:"-"`
+	}
+	ProductInput struct {
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Price       float64 `json:"price"`
+		Material    *string `json:"material"`
+		Size        *string `json:"size"`
+		Engine      *string `json:"engine"`
+		Wheel       *int    `json:"wheel"`
 	}
 )
 
@@ -49,8 +60,26 @@ func (p *Product) InitType() {
 
 	if wheelOk || engineOk {
 		p.Type = ProdcutTypeVehicle
-	}
-	if materialOk || sizeOk {
+	} else if materialOk || sizeOk {
 		p.Type = ProductTypeCloth
 	}
+}
+
+func (p ProductInput) ToProduct() Product {
+	product, _ := helper.ConvertPayload[Product](p)
+	product.AdditionalAttr = map[string]interface{}{}
+	if p.Wheel != nil {
+		product.AdditionalAttr["wheel"] = p.Wheel
+	}
+	if p.Engine != nil {
+		product.AdditionalAttr["engine"] = p.Engine
+		return product
+	}
+	if p.Material != nil {
+		product.AdditionalAttr["material"] = p.Material
+	}
+	if p.Size != nil {
+		product.AdditionalAttr["size"] = p.Size
+	}
+	return product
 }
