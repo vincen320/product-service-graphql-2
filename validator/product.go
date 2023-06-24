@@ -8,7 +8,7 @@ import (
 	productModel "github.com/vincen320/product-service-graphql-2/modules/product/model"
 )
 
-func CreateProduct(p productModel.Product) error {
+func CreateProduct(p *productModel.Product) error {
 	p.InitType()
 	if p.Type == 0 {
 		return cError.New(http.StatusInternalServerError, "please specify product type", "error product type validation")

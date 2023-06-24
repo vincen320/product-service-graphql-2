@@ -24,7 +24,7 @@ func (p *productUseCase) FindAllProducts(ctx context.Context) (response []produc
 }
 
 func (p *productUseCase) CreateProduct(ctx context.Context, request productModel.Product) (response productModel.Product, err error) {
-	err = validator.CreateProduct(request)
+	err = validator.CreateProduct(&request)
 	if err != nil {
 		return
 	}
