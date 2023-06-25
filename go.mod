@@ -26,4 +26,5 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/lib/pq v1.10.9
 	github.com/spf13/pflag v1.0.5 // indirect
+	golang.org/x/sync v0.3.0
 )
